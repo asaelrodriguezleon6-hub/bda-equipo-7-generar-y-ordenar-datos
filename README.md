@@ -43,8 +43,41 @@ Por defecto, tanto `randomwriter` como `randomtextwriter` intentan escribir **10
 
 ## 4. Guía de Reproducción Paso a Paso
 
-### 💻 En tu computadora (Host)
+### En tu computadora (Host)
 Asegurar que el contenedor esté corriendo y entrar en él:
 ```bash
 docker start hadoop
 docker exec -it hadoop bash
+### Dentro del contenedor
+1. **Definir la variable del JAR:**
+   ```bash
+   export JAR=$HADOOP_HOME/share/hadoop/mapreduce/hadoop-mapreduce-examples-3.3.6.jar
+
+# Generar 10 MB de texto (2 mappers de 5 MB)
+hadoop jar $JAR randomtextwriter \
+  -D mapreduce.randomtextwriter.totalbytes=10485760 \
+  -D mapreduce.randomtextwriter.bytespermap=5242880 \
+  datos_texto
+
+# Ordenar el texto
+hadoop jar $JAR sort \
+  -inFormat org.apache.hadoop.mapreduce.lib.input.KeyValueTextInputFormat \
+  -outFormat org.apache.hadoop.mapreduce.lib.output.TextOutputFormat \
+  -outKey org.apache.hadoop.io.Text \
+  -outValue org.apache.hadoop.io.Text \
+  datos_texto texto_ordenado
+
+# Inspeccionar salida ordenada
+hdfs dfs -cat texto_ordenado/part-m-00000 | head -n 15
+
+# Generar 5 MB de datos binarios
+hadoop jar $JAR randomwriter \
+  -D test.randomwrite.total_bytes=5242880 \
+  -D test.randomwrite.bytes_per_map=5242880 \
+  datos_binarios
+
+# Ordenar datos binarios
+hadoop jar $JAR sort datos_binarios binario_ordenado
+
+# Inspeccionar salida decodificada
+hdfs dfs -text binario_ordenado/part-m-00000 | head -n 10
