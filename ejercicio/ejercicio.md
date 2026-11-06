@@ -1,10 +1,35 @@
-# Mini Ejercicio: Generación y Ordenamiento Controlado
+# Ejercicio: Generación y ordenamiento de datos
 
 ## Objetivo
-Generar un conjunto de datos sintético de texto de exactamente 4 MB utilizando 4 tareas Map (1 MB por tarea) y posteriormente ordenarlo de forma ascendente.
+
+Generar cuatro archivos de texto aleatorio de aproximadamente 1 MB cada uno y ordenarlos con MapReduce.
 
 ## Instrucciones
-1. Ejecuta `randomtextwriter` limitando el tamaño total a 4 MB (4,194,304 bytes) y el tamaño por Map a 1 MB (1,048,576 bytes) en el directorio HDFS `ejercicio_random`.
-2. Verifica cuántos archivos `part-m-*` se crearon en `ejercicio_random`.
-3. Ejecuta el ejemplo `sort` tomando como entrada `ejercicio_random` y guardando el resultado en `ejercicio_sort`.
-4. Muestra las primeras 10 líneas ordenadas del resultado.
+
+1. Generar cuatro archivos de texto.
+2. Guardarlos en una misma carpeta.
+3. Ordenar los archivos utilizando Sort.
+4. Comprobar el número de divisiones de entrada.
+5. Mostrar las primeras diez líneas del resultado.
+
+## Ejecución
+
+En la terminal de Ubuntu:
+
+```bash
+docker cp scripts/ejercicio.sh hadoop:/opt/equipo7/ejercicio.sh
+docker exec -it hadoop bash /opt/equipo7/ejercicio.sh
+```
+
+## Resultados
+
+- Archivos de entrada: 4.
+- Divisiones de Sort: 4.
+- Archivo ordenado: 4.1 MB.
+- Ejecución completada.
+
+## Solución
+
+El script `scripts/ejercicio.sh` genera cuatro archivos de texto de aproximadamente 1 MB cada uno.
+
+Después utiliza Sort para ordenar los datos. Los resultados se guardan dentro del contenedor.

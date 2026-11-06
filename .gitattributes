@@ -1,0 +1,3 @@
+resultados/ejecucion-real/texto/part-m-00000 -whitespace
+resultados/muestra_ejercicio.txt -whitespace
+resultados/logs/*.log -whitespace

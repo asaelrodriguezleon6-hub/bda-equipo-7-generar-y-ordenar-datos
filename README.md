@@ -1,83 +1,116 @@
-# Práctica MapReduce - Equipo 7: Generar y Ordenar Datos
+# Equipo 7 - Generar y ordenar datos
 
-Este repositorio contiene la documentación, scripts de ejecución y evidencias de los ejemplos **`randomtextwriter`**, **`randomwriter`** y **`sort`** incluidos en Apache Hadoop 3.3.6.
+Práctica de MapReduce con Hadoop 3.3.6 utilizando los ejemplos randomtextwriter, randomwriter y sort.
 
----
+## 1. Programas utilizados
 
-## 1. Descripción de los Ejemplos y Casos Reales
+| Programa | Función |
+|---|---|
+| randomtextwriter | Genera palabras y registros de texto aleatorios. |
+| randomwriter | Genera datos binarios aleatorios. |
+| sort | Ordena los registros según sus claves. |
 
-| Ejemplo | Formato de Salida | ¿Qué hace? | Caso real de uso |
-| :--- | :--- | :--- | :--- |
-| **`randomtextwriter`** | Texto plano (`TextOutputFormat`) | Genera oraciones y palabras sintéticas aleatorias. | Benchmark de procesamiento de lenguaje natural (NLP), prueba de rendimiento en pipelines de ingesta de logs. |
-| **`randomwriter`** | Binario (`SequenceFileOutputFormat`) | Genera pares clave-valor binarios aleatorios (`BytesWritable`). | Pruebas de estrés de hardware, benchmarking de I/O de disco y tasa de transferencia en clústeres. |
-| **`sort`** | Texto o Binario (`SequenceFile`) | Ordena los registros de entrada por su clave lexicográfica o numéricamente. | Reorganización previa a cruces masivos (joins), ordenamiento previo a generación de índices invertidos o búsquedas binarias distribuidas. |
+Estos programas pueden utilizarse para generar datos de prueba y comprobar el funcionamiento de sistemas de procesamiento de información.
 
----
+## 2. Funcionamiento de MapReduce
 
-## 2. Arquitectura MapReduce
+**RandomTextWriter y RandomWriter**
 
-### `randomtextwriter` y `randomwriter` (Map-Only)
-* **InputFormat:** `RandomInputFormat` (no lee archivos de disco; calcula divisiones virtuales según los bytes solicitados por parámetro).
-* **Map:** Cada mapper genera secuencias continuas de bytes o palabras y emite pares `(Clave, Valor)`.
-* **Reduce:** No existe (0 Reducers). La salida es escrita directamente por las tareas Map (`part-m-*`).
+Utilizan tareas Map para generar los registros. No necesitan Reduce.
 
-### `sort` (Full MapReduce)
-* **Map:** Actúa como `IdentityMapper`. Lee los pares `(Clave, Valor)` y los reemite idénticos.
-* **Shuffle & Sort:** El motor interno de Hadoop agrupa, particiona y ordena automáticamente todas las claves en tránsito.
-* **Reduce:** Actúa como `IdentityReducer`. Recibe los registros ya ordenados y los escribe secuencialmente al sistema de archivos (`part-r-*` o `part-m-*` en modo directo).
+**Sort**
 
----
+- Map: lee los registros de entrada.
+- Shuffle y Sort: organiza los registros según sus claves.
+- Reduce: escribe los registros ordenados.
 
-## 3. Advertencia Crítica de Almacenamiento
+## 3. Requisitos
 
-Por defecto, tanto `randomwriter` como `randomtextwriter` intentan escribir **10 GB** (10 maps de 1 GB cada uno), lo que satura el almacenamiento del contenedor Docker. Es fundamental usar los parámetros `-D` antes del comando para limitar el tamaño:
+- Docker instalado.
+- Contenedor Debian llamado hadoop.
+- Java 17.
+- Hadoop 3.3.6 en /opt/hadoop-3.3.6.
+- Hadoop configurado en modo Standalone.
 
-* **Para texto (`randomtextwriter`):**
-  - `-D mapreduce.randomtextwriter.totalbytes=<bytes>`
-  - `-D mapreduce.randomtextwriter.bytespermap=<bytes>`
-* **Para binario (`randomwriter`):**
-  - `-D test.randomwrite.total_bytes=<bytes>`
-  - `-D test.randomwrite.bytes_per_map=<bytes>`
+## 4. Ejecución
 
----
+Los siguientes comandos se ejecutan en la terminal de Ubuntu.
 
-## 4. Guía de Reproducción Paso a Paso
+Clonar el repositorio:
 
-### En tu computadora (Host)
-Asegurar que el contenedor esté corriendo y entrar en él:
+```bash
+git clone https://github.com/mtorresmartinez255-source/bda-equipo-7-generar-y-ordenar-datos.git
+cd bda-equipo-7-generar-y-ordenar-datos
+```
+
+Iniciar el contenedor:
+
 ```bash
 docker start hadoop
-docker exec -it hadoop bash
-### Dentro del contenedor
-1. **Definir la variable del JAR:**
-   ```bash
-   export JAR=$HADOOP_HOME/share/hadoop/mapreduce/hadoop-mapreduce-examples-3.3.6.jar
+```
 
-# Generar 10 MB de texto (2 mappers de 5 MB)
-hadoop jar $JAR randomtextwriter \
-  -D mapreduce.randomtextwriter.totalbytes=10485760 \
-  -D mapreduce.randomtextwriter.bytespermap=5242880 \
-  datos_texto
+Preparar la carpeta:
 
-# Ordenar el texto
-hadoop jar $JAR sort \
-  -inFormat org.apache.hadoop.mapreduce.lib.input.KeyValueTextInputFormat \
-  -outFormat org.apache.hadoop.mapreduce.lib.output.TextOutputFormat \
-  -outKey org.apache.hadoop.io.Text \
-  -outValue org.apache.hadoop.io.Text \
-  datos_texto texto_ordenado
+```bash
+docker exec hadoop mkdir -p /opt/equipo7
+```
 
-# Inspeccionar salida ordenada
-hdfs dfs -cat texto_ordenado/part-m-00000 | head -n 15
+Copiar el script:
 
-# Generar 5 MB de datos binarios
-hadoop jar $JAR randomwriter \
-  -D test.randomwrite.total_bytes=5242880 \
-  -D test.randomwrite.bytes_per_map=5242880 \
-  datos_binarios
+```bash
+docker cp scripts/ejecutar.sh hadoop:/opt/equipo7/ejecutar.sh
+```
 
-# Ordenar datos binarios
-hadoop jar $JAR sort datos_binarios binario_ordenado
+Ejecutar la práctica:
 
-# Inspeccionar salida decodificada
-hdfs dfs -text binario_ordenado/part-m-00000 | head -n 10
+```bash
+docker exec -it hadoop bash /opt/equipo7/ejecutar.sh
+```
+
+El script ejecuta los tres programas y muestra la carpeta donde se guardaron los resultados.
+
+Los datos de entrada se generan automáticamente.
+
+## 5. Resultados
+
+En la prueba realizada con Hadoop 3.3.6 obtuvimos:
+
+| Programa | Resultado |
+|---|---|
+| RandomTextWriter | 1,590 registros |
+| RandomWriter | 115 registros |
+| Sort | Archivo ordenado de aproximadamente 1.1 MB |
+
+Los tres programas terminaron correctamente.
+
+Los registros de ejecución se encuentran en `resultados/logs/`.
+
+Los archivos generados están en `resultados/ejecucion-real/`.
+
+## 6. Mini ejercicio
+
+El ejercicio consiste en generar cuatro archivos de texto aleatorio de aproximadamente 1 MB y ordenarlos con Sort.
+
+Desde Ubuntu:
+
+```bash
+docker cp scripts/ejercicio.sh hadoop:/opt/equipo7/ejercicio.sh
+docker exec -it hadoop bash /opt/equipo7/ejercicio.sh
+```
+
+Resultados obtenidos:
+
+- 4 archivos de entrada.
+- 4 divisiones de entrada en Sort.
+- 1 archivo ordenado de aproximadamente 4.1 MB.
+
+Las instrucciones y la solución están en `ejercicio/ejercicio.md`.
+
+## 7. Archivos del proyecto
+
+- `datos/`: información sobre los datos.
+- `scripts/`: comandos de ejecución.
+- `resultados/`: archivos de salida y registros.
+- `ejercicio/`: actividad y solución.
+
+Los archivos grandes de Hadoop no están incluidos en el repositorio.

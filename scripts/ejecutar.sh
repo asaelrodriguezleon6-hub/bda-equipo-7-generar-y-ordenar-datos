@@ -1,32 +1,41 @@
 #!/bin/bash
-set -e
+set -euo pipefail
 
-JAR=$HADOOP_HOME/share/hadoop/mapreduce/hadoop-mapreduce-examples-3.3.6.jar
+export JAVA_HOME="$(dirname "$(dirname "$(readlink -f "$(command -v java)")")")"
+export HADOOP_HOME=/opt/hadoop-3.3.6
+export PATH="$HADOOP_HOME/bin:$PATH"
 
-echo "=== 1. Limpiando directorios previos ==="
-hdfs dfs -rm -r -f datos_texto texto_ordenado datos_binarios binario_ordenado
+JAR="$HADOOP_HOME/share/hadoop/mapreduce/hadoop-mapreduce-examples-3.3.6.jar"
 
-echo "=== 2. Ejecutando randomtextwriter (10 MB controlados) ==="
-hadoop jar $JAR randomtextwriter \
-  -D mapreduce.randomtextwriter.totalbytes=10485760 \
-  -D mapreduce.randomtextwriter.bytespermap=5242880 \
-  datos_texto
+mkdir -p /opt/equipo7
+BASE=$(mktemp -d /opt/equipo7/demo-XXXXXXXX)
 
-echo "=== 3. Ordenando texto con sort ==="
-hadoop jar $JAR sort \
-  -inFormat org.apache.hadoop.mapreduce.lib.input.KeyValueTextInputFormat \
+echo "1. Generando texto aleatorio"
+
+hadoop jar "$JAR" randomtextwriter \
+  -Dmapreduce.randomtextwriter.totalbytes=1048576 \
+  -Dmapreduce.randomtextwriter.bytespermap=1048576 \
   -outFormat org.apache.hadoop.mapreduce.lib.output.TextOutputFormat \
-  -outKey org.apache.hadoop.io.Text \
-  -outValue org.apache.hadoop.io.Text \
-  datos_texto texto_ordenado
+  "$BASE/texto" 2>&1 | tee "$BASE/01_randomtextwriter.log"
 
-echo "=== 4. Ejecutando randomwriter binario (5 MB controlados) ==="
-hadoop jar $JAR randomwriter \
-  -D test.randomwrite.total_bytes=5242880 \
-  -D test.randomwrite.bytes_per_map=5242880 \
-  datos_binarios
+echo "2. Generando datos binarios"
 
-echo "=== 5. Ordenando archivo binario con sort ==="
-hadoop jar $JAR sort datos_binarios binario_ordenado
+hadoop jar "$JAR" randomwriter \
+  -Dmapreduce.randomwriter.totalbytes=1048576 \
+  -Dmapreduce.randomwriter.bytespermap=1048576 \
+  "$BASE/binarios" 2>&1 | tee "$BASE/02_randomwriter.log"
 
-echo "=== Proceso finalizado con éxito ==="
+echo "3. Ordenando datos binarios"
+
+hadoop jar "$JAR" sort -r 1 \
+  "$BASE/binarios" \
+  "$BASE/ordenados" 2>&1 | tee "$BASE/03_sort.log"
+
+echo "4. Revisando resultados"
+
+ls -lh "$BASE/texto"
+ls -lh "$BASE/binarios"
+ls -lh "$BASE/ordenados"
+
+echo "Proceso terminado."
+echo "Resultados guardados en: $BASE"

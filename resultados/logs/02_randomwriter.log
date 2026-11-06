@@ -1,0 +1,83 @@
+2026-11-06 14:41:39,043 INFO impl.MetricsConfig: Loaded properties from hadoop-metrics2.properties
+2026-11-06 14:41:39,111 INFO impl.MetricsSystemImpl: Scheduled Metric snapshot period at 10 second(s).
+2026-11-06 14:41:39,111 INFO impl.MetricsSystemImpl: JobTracker metrics system started
+Running 1 maps.
+Job started: Fri Nov 06 14:41:39 UTC 2026
+2026-11-06 14:41:39,159 WARN impl.MetricsSystemImpl: JobTracker metrics system already initialized!
+2026-11-06 14:41:39,265 INFO mapreduce.JobSubmitter: number of splits:1
+2026-11-06 14:41:39,390 INFO mapreduce.JobSubmitter: Submitting tokens for job: job_local865800328_0001
+2026-11-06 14:41:39,390 INFO mapreduce.JobSubmitter: Executing with tokens: []
+2026-11-06 14:41:39,503 INFO mapreduce.Job: The url to track the job: http://localhost:8080/
+2026-11-06 14:41:39,504 INFO mapreduce.Job: Running job: job_local865800328_0001
+2026-11-06 14:41:39,504 INFO mapred.LocalJobRunner: OutputCommitter set in config null
+2026-11-06 14:41:39,508 INFO output.PathOutputCommitterFactory: No output committer factory defined, defaulting to FileOutputCommitterFactory
+2026-11-06 14:41:39,509 INFO output.FileOutputCommitter: File Output Committer Algorithm version is 2
+2026-11-06 14:41:39,509 INFO output.FileOutputCommitter: FileOutputCommitter skip cleanup _temporary folders under output directory:false, ignore cleanup failures: false
+2026-11-06 14:41:39,510 INFO mapred.LocalJobRunner: OutputCommitter is org.apache.hadoop.mapreduce.lib.output.FileOutputCommitter
+2026-11-06 14:41:39,537 INFO mapred.LocalJobRunner: Waiting for map tasks
+2026-11-06 14:41:39,537 INFO mapred.LocalJobRunner: Starting task: attempt_local865800328_0001_m_000000_0
+2026-11-06 14:41:39,553 INFO output.PathOutputCommitterFactory: No output committer factory defined, defaulting to FileOutputCommitterFactory
+2026-11-06 14:41:39,553 INFO output.FileOutputCommitter: File Output Committer Algorithm version is 2
+2026-11-06 14:41:39,553 INFO output.FileOutputCommitter: FileOutputCommitter skip cleanup _temporary folders under output directory:false, ignore cleanup failures: false
+2026-11-06 14:41:39,565 INFO mapred.Task:  Using ResourceCalculatorProcessTree : [ ]
+2026-11-06 14:41:39,568 INFO mapred.MapTask: Processing split: file:/opt/equipo7/demo-DlSrZCTp/binarios/dummy-split-0:0+1
+2026-11-06 14:41:39,612 INFO mapred.LocalJobRunner: 
+2026-11-06 14:41:39,618 INFO mapred.Task: Task:attempt_local865800328_0001_m_000000_0 is done. And is in the process of committing
+2026-11-06 14:41:39,620 INFO mapred.LocalJobRunner: 
+2026-11-06 14:41:39,620 INFO mapred.Task: Task attempt_local865800328_0001_m_000000_0 is allowed to commit now
+2026-11-06 14:41:39,621 INFO output.FileOutputCommitter: Saved output of task 'attempt_local865800328_0001_m_000000_0' to file:/opt/equipo7/demo-DlSrZCTp/binarios
+2026-11-06 14:41:39,622 INFO mapred.LocalJobRunner: done with 106 records.
+2026-11-06 14:41:39,622 INFO mapred.Task: Task 'attempt_local865800328_0001_m_000000_0' done.
+2026-11-06 14:41:39,626 INFO mapred.Task: Final Counters for attempt_local865800328_0001_m_000000_0: Counters: 17
+	File System Counters
+		FILE: Number of bytes read=281511
+		FILE: Number of bytes written=1987663
+		FILE: Number of read operations=0
+		FILE: Number of large read operations=0
+		FILE: Number of write operations=0
+	Map-Reduce Framework
+		Map input records=1
+		Map output records=106
+		Input split bytes=119
+		Spilled Records=0
+		Failed Shuffles=0
+		Merged Map outputs=0
+		GC time elapsed (ms)=0
+		Total committed heap usage (bytes)=121634816
+	org.apache.hadoop.examples.RandomWriter$Counters
+		BYTES_WRITTEN=1060731
+		RECORDS_WRITTEN=106
+	File Input Format Counters 
+		Bytes Read=0
+	File Output Format Counters 
+		Bytes Written=1071015
+2026-11-06 14:41:39,626 INFO mapred.LocalJobRunner: Finishing task: attempt_local865800328_0001_m_000000_0
+2026-11-06 14:41:39,627 INFO mapred.LocalJobRunner: map task executor complete.
+2026-11-06 14:41:40,509 INFO mapreduce.Job: Job job_local865800328_0001 running in uber mode : false
+2026-11-06 14:41:40,511 INFO mapreduce.Job:  map 100% reduce 0%
+2026-11-06 14:41:40,516 INFO mapreduce.Job: Job job_local865800328_0001 completed successfully
+2026-11-06 14:41:40,526 INFO mapreduce.Job: Counters: 17
+	File System Counters
+		FILE: Number of bytes read=281511
+		FILE: Number of bytes written=1987663
+		FILE: Number of read operations=0
+		FILE: Number of large read operations=0
+		FILE: Number of write operations=0
+	Map-Reduce Framework
+		Map input records=1
+		Map output records=106
+		Input split bytes=119
+		Spilled Records=0
+		Failed Shuffles=0
+		Merged Map outputs=0
+		GC time elapsed (ms)=0
+		Total committed heap usage (bytes)=121634816
+	org.apache.hadoop.examples.RandomWriter$Counters
+		BYTES_WRITTEN=1060731
+		RECORDS_WRITTEN=106
+	File Input Format Counters 
+		Bytes Read=0
+	File Output Format Counters 
+		Bytes Written=1071015
+Job ended: Fri Nov 06 14:41:40 UTC 2026
+The job took 1 seconds.
