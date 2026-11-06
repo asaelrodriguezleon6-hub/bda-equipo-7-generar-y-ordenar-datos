@@ -39,7 +39,7 @@ Los siguientes comandos se ejecutan en la terminal de Ubuntu.
 Clonar el repositorio:
 
 ```bash
-git clone https://github.com/mtorresmartinez255-source/bda-equipo-7-generar-y-ordenar-datos.git
+git clone https://github.com/asaelrodriguezleon6-hub/bda-equipo-7-generar-y-ordenar-datos.git
 cd bda-equipo-7-generar-y-ordenar-datos
 ```
 
